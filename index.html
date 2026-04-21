@@ -906,7 +906,7 @@
       <h1>APUSH FRQ Practice</h1>
       <p class="subtitle">SAQ · LEQ · DBQ · HIPP — organized by AP period</p>
     </div>
-    <div class="topbar-right" title="S/O to Micah for the guide">
+    <div class="topbar-right" title="S/O to Micah for the templates">
       <a class="res-link"
         href="https://docs.google.com/document/d/1XBsYalKkhprVJGKIC2fCyfIr5FUkW9QZvOWRKEaZGcM/edit?usp=sharing"
         target="_blank"><i class="bi bi-file-earmark-text"></i> Essay Templates</a>
@@ -1012,7 +1012,7 @@
     <input type="password" id="akey" placeholder="API key (sk-ant-...)">
     <button class="save-btn" onclick="saveKey()">Save</button>
     <span id="key-st"></span>
-    <span class="grade-bar-note">No key? Use <strong>Copy</strong> → paste into the AI of your choice</span>
+    <span class="grade-bar-note">No key? Use <strong>Copy</strong> → paste into AI to do so</span>
     <button class="primary" id="grade-btn" onclick="gradeActive()"><i class="bi bi-check2-circle"></i> Grade</button>
     <span class="st" id="grade-st"></span>
   </div>
@@ -1083,7 +1083,6 @@
       </div>
     </div>
   </div>
-
 
   <script>
     /* ── Settings ─────────────────────────────────────────── */
@@ -1156,7 +1155,7 @@
       const warn = timerRemaining <= 300;
       target.innerHTML = `
     <i class="bi bi-stopwatch" style="color:var(--text3);font-size:14px"></i>
-    <span class="timer-label">${{ saq: 'SAQ — 13 min', leq: 'LEQ — 40 min', hipp: 'HIPP — 10 min' }[tab] || ''} <span style="font-size:10px;color:var(--text4)">(${cfg.accom === 'standard' ? 'standard' : cfg.accom + ' extended'})</span></span>
+    <span class="timer-label">${{ saq: 'SAQ', leq: 'LEQ', hipp: 'HIPP' }[tab] || ''} — ${Math.round(timerSecs(tab === 'dbq-ov' ? 'dbq' : tab) / 60)} min <span style="font-size:10px;color:var(--text4)">(${cfg.accom === 'standard' ? 'standard' : cfg.accom + ' extended'})</span></span>
     <span class="timer-display${warn ? ' warn' : ''}" id="timer-disp">${fmtTime(timerRemaining)}</span>
     <button class="icon-btn" id="timer-play-btn" onclick="timerToggle('${tab}')" title="${timerRunning ? 'Pause' : 'Start'}">${timerRunning ? '<i class="bi bi-pause-fill"></i>' : '<i class="bi bi-play-fill"></i>'}</button>
     <button class="icon-btn" onclick="resetTimer('${tab}')" title="Reset"><i class="bi bi-arrow-counterclockwise"></i></button>
@@ -1165,9 +1164,13 @@
     }
     function timerToggle(tab) {
       if (timerRunning) {
-        clearInterval(timerInterval); timerInterval = null; timerRunning = false;
+        // pause
+        clearInterval(timerInterval);
+        timerInterval = null;
+        timerRunning = false;
       } else {
-        if (timerRemaining <= 0) timerRemaining = timerSecs(tab);
+        // play
+        if (timerRemaining <= 0) timerRemaining = timerSecs(tab === 'dbq-ov' ? 'dbq' : tab);
         timerRunning = true;
         timerInterval = setInterval(() => {
           timerRemaining--;
@@ -1177,12 +1180,15 @@
             dispEl.className = 'timer-display' + (timerRemaining <= 300 ? ' warn' : '');
           }
           if (timerRemaining <= 0) {
-            clearInterval(timerInterval); timerInterval = null; timerRunning = false;
+            clearInterval(timerInterval);
+            timerInterval = null;
+            timerRunning = false;
             if (dispEl) dispEl.textContent = '00:00';
             setTimeout(() => alert("Time's up!"), 50);
           }
         }, 1000);
       }
+      // Re-render the whole widget so the icon + button state is always correct
       renderTimerWidget(tab);
     }
 
@@ -1344,9 +1350,6 @@
       { year: 2023, set: 1, period: 'P4–P5', periods: ['p4', 'p5', 'p7'], prompt: 'Evaluate the extent to which commercial development changed United States society from 1800 to 1855.', url: 'https://apcentral.collegeboard.org/media/pdf/ap23-frq-us-history-set-1.pdf', score: 'https://apcentral.collegeboard.org/media/pdf/ap23-sg-us-history-set-1.pdf' },
       { year: 2023, set: 2, period: 'P5–P7', periods: ['p5', 'p6', 'p7'], prompt: 'Evaluate the extent to which the definitions of United States citizenship changed from 1865 to 1920.', url: 'https://apcentral.collegeboard.org/media/pdf/ap23-frq-us-history-set-2.pdf', score: 'https://apcentral.collegeboard.org/media/pdf/ap23-sg-us-history-set-2.pdf' },
       { year: 2022, set: 1, period: 'P4–P5', periods: ['p4', 'p5'], prompt: 'Evaluate the extent to which the United States developed an identity between 1800 and 1855.', url: 'https://apcentral.collegeboard.org/media/pdf/ap22-frq-us-history.pdf', score: 'https://apcentral.collegeboard.org/media/pdf/ap22-sg-us-history.pdf' },
-      { year: 2019, set: 1, period: 'P6–P7', periods: ['p6', 'p7'], prompt: 'Evaluate the extent to which the Progressive movement fostered political change in the United States from 1890 to 1920.', url: 'https://apcentral.collegeboard.org/courses/ap-united-states-history/exam/past-exam-questions', score: 'https://apcentral.collegeboard.org/courses/ap-united-states-history/exam/past-exam-questions' },
-      { year: 2018, set: 1, period: 'P6–P7', periods: ['p6', 'p7'], prompt: 'Evaluate the relative importance of different causes for the expanding role of the United States in the world in the period from 1865 to 1910.', url: 'https://apcentral.collegeboard.org/courses/ap-united-states-history/exam/past-exam-questions', score: 'https://apcentral.collegeboard.org/courses/ap-united-states-history/exam/past-exam-questions' },
-      { year: 2017, set: 1, period: 'P3', periods: ['p3'], prompt: 'Evaluate the extent of change in ideas about American independence from 1763 to 1783.', url: 'https://apcentral.collegeboard.org/courses/ap-united-states-history/exam/past-exam-questions', score: 'https://apcentral.collegeboard.org/courses/ap-united-states-history/exam/past-exam-questions' }
     ];
 
     function renderSAQ() {
@@ -1363,7 +1366,6 @@
       h += `<div class="btn-row"><button class="ghost" id="saq-copy-btn" onclick="copySAQ()"><i class="bi bi-clipboard"></i> Copy</button><div class="confirm-inline" id="saq-cc"><span>Clear all?</span><button class="danger-yes" onclick="['a','b','c'].forEach(l=>{const e=document.getElementById('saq-'+l);if(e)e.value=''});hideClear('saq-cc','saq-cb')"><i class="bi bi-check-lg"></i> Yes</button><button class="danger-no" onclick="hideClear('saq-cc','saq-cb')"><i class="bi bi-x-lg"></i></button></div><button class="ghost" id="saq-cb" onclick="showClear('saq-cc','saq-cb')"><i class="bi bi-trash3"></i> Clear</button></div>`;
       el.innerHTML = h;
     }
-
 
     function renderLEQ() {
       const qs = LEQS[curPeriod] || [];
@@ -1455,9 +1457,9 @@
     function renderTimerWidget(tab) {
       const isOv = (tab === 'dbq-ov');
       const el = document.getElementById(isOv ? 'ov-timer' : 'timer-widget');
-      if (!el || !cfg.timer) return;
-      if (tab === 'settings' || tab === 'dbq') { if (el) el.className = 'timer-widget hidden'; return; }
-      const labels = { saq: 'SAQ — 13 min', leq: 'LEQ — 40 min', hipp: 'HIPP — 10 min', 'dbq-ov': 'DBQ — 60 min' };
+      if (!el) return;
+      if (!cfg.timer || tab === 'settings' || tab === 'dbq') { el.className = 'timer-widget hidden'; return; }
+      const labels = { saq: `SAQ — ${Math.round(TIMES.saq[cfg.accom] / 60)} min`, leq: `LEQ — ${Math.round(TIMES.leq[cfg.accom] / 60)} min`, hipp: `HIPP — ${Math.round(TIMES.hipp[cfg.accom] / 60)} min`, 'dbq-ov': `DBQ — ${Math.round(TIMES.dbq[cfg.accom] / 60)} min` };
       const warn = timerRemaining <= 300;
       const tabKey = isOv ? 'dbq' : tab;
       el.className = 'timer-widget';
@@ -1525,7 +1527,21 @@
     applySettings();
     buildPeriodBar();
     setPeriod('p1');
+
+    function renderTab(t) {
+      if (t === 'saq') renderSAQ();
+      else if (t === 'leq') renderLEQ();
+      else if (t === 'dbq') renderDBQ();
+      else if (t === 'hipp') renderHIPP();
+
+      renderTimerWidget(t);   // ← ADD THIS LINE
+    }
   </script>
+  <footer style="display:grid;place-items:center;padding:1em;position:relative;bottom:0;margin-top:1rem">
+    <p style="color:var(--text4);font-size:smaller;">
+      <i>made by zane house</i> &nbsp;&nbsp;^-^
+    </p>
+  </footer>
 </body>
 
 </html>
